@@ -8,7 +8,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {API} from "../../../_metronic/_helpers/AxiosHelper";
 import {useHistory, useLocation, useParams} from "react-router-dom";
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
+import {Button} from "@material-ui/core";
 import {connect} from "react-redux";
 
 
@@ -60,6 +60,7 @@ function createData(id, email, name, current_plan, status) {
 
 function FilteredStore(props) {
     const classes = useStyles();
+    const history = useHistory();
     const [store, setStore] = useState([]);
     const [changeFlag, setChangFlag] = useState(true);
     const [page, setPage] = useState(1);
@@ -101,6 +102,10 @@ function FilteredStore(props) {
         setChangFlag(!changeFlag);
     }
 
+    const userClickHandler = id => {
+        history.push(`/store/edit-snippet/${id}`);
+    };
+
     return (
         <Paper className={classes.root}>
             <Table className={classes.table}>
@@ -110,6 +115,7 @@ function FilteredStore(props) {
                         <StyledTableCell align="center">EMAIL</StyledTableCell>
                         <StyledTableCell align="center">PLAN</StyledTableCell>
                         <StyledTableCell align="center">STATUS</StyledTableCell>
+                        <StyledTableCell align="center">ACTION</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -119,7 +125,9 @@ function FilteredStore(props) {
                             <StyledTableCell align="center">{row.email}</StyledTableCell>
                             <StyledTableCell align="center">{row.current_plan.toUpperCase()}</StyledTableCell>
                             <StyledTableCell align="center">{row.status == '1'? 'Enable' : 'Disable'}</StyledTableCell>
-
+                            <StyledTableCell align="center">
+                                <Button size="small" variant="contained" onClick={(event)=>userClickHandler(row.id)} color={"secondary"} className={classes.margin}> Update Snippet </Button>
+                            </StyledTableCell>
                         </StyledTableRow>
                     ))}
                 </TableBody>

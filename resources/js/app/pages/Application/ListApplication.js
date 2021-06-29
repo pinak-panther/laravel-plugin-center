@@ -145,7 +145,6 @@ function ListApplication(props) {
                                 <Button size="small" variant="contained" onClick={(event)=>userClickHandler(row.id)} color={"secondary"} className={classes.margin}> Update </Button>
                                 <Button size="small" variant="contained" onClick={(event)=>planClickHandler(row.shopify_app_url)} color={"secondary"} className={classes.margin}> Show Plan </Button>
                             </StyledTableCell>
-
                         </StyledTableRow>
                     ))}
                 </TableBody>
