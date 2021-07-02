@@ -18,6 +18,9 @@ function EditSnippet(props) {
         },
         buttons:{
             marginRight: '10px'
+        },
+        buttonContainer:{
+            textAlign:'center'
         }
     }));
 
@@ -102,8 +105,6 @@ function EditSnippet(props) {
                     localStorage.removeItem('files');
                     history.back();
                 });
-
-
             // axios.post(shopifyUpdateSnippetURL,{data:selectedFile.content})
             // .then(response=>{
             //     setUpdateSnippet(true);
@@ -123,16 +124,19 @@ function EditSnippet(props) {
         return files.map((file) => {
             return (
                 <TabPanel value={value} index={file.index} key={file.index}>
-                <textarea name={`tab_${file.index}`} id={`test_${file.index}`} cols={150} rows={20}
+                <h5><strong>{file.filename.toUpperCase()}</strong></h5>
+                <textarea name={`tab_${file.index}`} id={`test_${file.index}`} cols={145} rows={20}
                           value={selectedFile.content}
                           onChange={(event) => handleFileContentChange(event)} onBlur={()=>handleUpdateSnippet(event)}/>
                     {/*<Button className={classes.buttons} variant={"contained"} color={"secondary"} onClick={(event) => handleUpdateSnippet(event)}*/}
                     {/*        disabled={updateSnippet}>Update Snippet</Button>*/}
-                    <Button className={classes.buttons} variant={"contained"} color={"secondary"}
-                            onClick={(event) => handlePushSnippetToShopify(event)} disabled={pushSnippetToShopify}>Push
-                        All Snippet to Shopify</Button>
-                    <Button variant={"contained"} color={"secondary"}
-                            onClick={(event) => handleResetClick()}>Reset Snippets</Button>
+                    <div className={classes.buttonContainer}>
+                        <Button className={classes.buttons} variant={"contained"} color={"secondary"}
+                                onClick={(event) => handlePushSnippetToShopify(event)} disabled={pushSnippetToShopify}>Push
+                            All Snippet to Shopify</Button>
+                        <Button variant={"contained"} color={"secondary"}
+                                onClick={(event) => handleResetClick()}>Reset Snippets</Button>
+                    </div>
                 </TabPanel>
             )
         });
