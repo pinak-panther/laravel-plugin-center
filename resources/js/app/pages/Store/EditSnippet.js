@@ -12,6 +12,7 @@ function EditSnippet(props) {
             backgroundColor: theme.palette.background.paper,
             display: 'flex',
             height: 500,
+            fontFamily:'poppins'
         },
         tabs: {
             borderRight: `1px solid ${theme.palette.divider}`,
@@ -49,7 +50,7 @@ function EditSnippet(props) {
                     tempArray.push(...data.data);
                     setFiles(tempArray);
                     setSelectedFile(tempArray[0]);
-                    console.log(tempArray);
+                    // console.log(tempArray);
                 })
                 .catch(error=>{
                     console.log(error);
@@ -95,12 +96,12 @@ function EditSnippet(props) {
 
     const handlePushSnippetToShopify = event => {
         let filesFromLocalStorage = localStorage.getItem('files');
-        console.log("filesFromLocalStorage");
-        console.log(filesFromLocalStorage);
+        // console.log("filesFromLocalStorage");
+        // console.log(filesFromLocalStorage);
         if (filesFromLocalStorage != null) {
             API.post('/store/update-all-snippets',{storeId, files:filesFromLocalStorage},prepareAuthHeader())
                 .then(response=>{
-                    console.log(response);
+                    // console.log(response);
                     setPushSnippetToShopify(true);
                     localStorage.removeItem('files');
                     history.back();
@@ -124,8 +125,8 @@ function EditSnippet(props) {
         return files.map((file) => {
             return (
                 <TabPanel value={value} index={file.index} key={file.index}>
-                <h5><strong>{file.filename.toUpperCase()}</strong></h5>
-                <textarea name={`tab_${file.index}`} id={`test_${file.index}`} cols={145} rows={20}
+                <h4>{file.filename.toUpperCase()}</h4>
+                <textarea name={`tab_${file.index}`} id={`test_${file.index}`} cols={120} rows={20}
                           value={selectedFile.content}
                           onChange={(event) => handleFileContentChange(event)} onBlur={()=>handleUpdateSnippet(event)}/>
                     {/*<Button className={classes.buttons} variant={"contained"} color={"secondary"} onClick={(event) => handleUpdateSnippet(event)}*/}
