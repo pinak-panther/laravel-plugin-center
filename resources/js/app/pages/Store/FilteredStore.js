@@ -103,7 +103,7 @@ function FilteredStore(props) {
     }
 
     const userClickHandler = id => {
-        history.push(`/store/edit-snippet/${id}`);
+        history.push(`/store/${id}/app/${appId}/edit-snippet`);
     };
 
     return (

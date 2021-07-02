@@ -19,6 +19,7 @@ class CreateStoresTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('current_plan');
+            $table->string('access_token');
             $table->tinyInteger('status')->default(0);
             $table->softDeletes();
             $table->timestamps();

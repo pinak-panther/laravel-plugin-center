@@ -10,3 +10,6 @@ export const WEB = axios.create({
     baseURL : `https://pc.test/`,
 });
 
+export const AXIOS = axios.create({
+});
+

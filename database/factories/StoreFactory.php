@@ -21,12 +21,15 @@ class StoreFactory extends Factory
      */
     public function definition()
     {
-        $applicationIds = ['123354','1354500','1354600','1354800','1354745'];
+        $applicationIds = ['12335400','1354500','1354600','1354800','1354745'];
+        $domain = explode(".",$this->faker->domainName)[0];
         return [
             'application_id'=>$this->faker->randomElement($applicationIds),
-            'name'=>$this->faker->domainName,
+//            'name'=>"https://{$domain}.myshopify.com",
+            'name'=>"https://pinak-intellifil.myshopify.com",
             'email'=>$this->faker->email,
             'current_plan'=>$this->faker->randomElement(['plan1','plan2','plan3','plan4']),
+            'access_token'=>'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',
             'status'=>$this->faker->randomElement(['1','0']),
         ];
     }

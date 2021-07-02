@@ -39,7 +39,8 @@ export default function BasePage() {
             {/*Store Routes*/}
             <ContentRoute path="/store-list" exact component={ListStore} />
             <ContentRoute path="/store-filtered/:appId" component={FilteredStore} />
-            <ContentRoute path="/store/edit-snippet/:appId" component={EditSnippet} />
+            {/*<ContentRoute path="/store/edit-snippet/:appId" component={EditSnippet} />*/}
+            <ContentRoute path="/store/:storeId/app/:appId/edit-snippet" component={EditSnippet} />
 
             <Redirect to="/error/error-v1" />
         </Switch>

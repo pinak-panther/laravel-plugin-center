@@ -2,7 +2,9 @@ import {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Button, Tab, Tabs} from "@material-ui/core";
 import TabPanel from "../../../_metronic/_partials/controls/tabs/TabPanel";
-
+import {API} from "../../../_metronic/_helpers/AxiosHelper";
+import {connect} from "react-redux";
+import {useParams} from "react-router-dom";
 function EditSnippet(props) {
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -26,34 +28,32 @@ function EditSnippet(props) {
     const [updateSnippet, setUpdateSnippet] = useState(false);
     const [pushSnippetToShopify, setPushSnippetToShopify] = useState(false);
     const [resetSnippet, setResetSnippet] = useState(false);
-    const shopifyUpdateSnippetURL = '';
+    const params = useParams();
+    const {appId,storeId} = params;
+
 
     useEffect(() => {
-        const tempArray = [
-            {"filename": "test1.liquid", "content": "1 test file content", "index": 0},
-            {"filename": "test2.liquid", "content": "2 test file content", "index": 1},
-            {"filename": "test3.liquid", "content": "3 test file content", "index": 2},
-            {"filename": "test4.liquid", "content": "4 test file content", "index": 3},
-            {"filename": "test5.liquid", "content": "5 test file content", "index": 4},
-            {"filename": "test6.liquid", "content": "6 test file content", "index": 5},
-            {"filename": "test7.liquid", "content": "7 test file content", "index": 6},
-            {"filename": "test8.liquid", "content": "8 test file content", "index": 7},
-            {"filename": "test9.liquid", "content": "9 test file content", "index": 8},
-            {"filename": "test10.liquid", "content": "10 test file content", "index": 9},
-            {"filename": "test11.liquid", "content": "11 test file content", "index": 10},
-            {"filename": "test12.liquid", "content": "12 test file content", "index": 11},
-        ]
         let filesFromLocalStorage = localStorage.getItem('files');
         if (filesFromLocalStorage != null) {
             filesFromLocalStorage = JSON.parse(filesFromLocalStorage);
             setFiles(filesFromLocalStorage);
             setSelectedFile(filesFromLocalStorage[0]);
-
         } else {
-            setFiles(tempArray);
-            setSelectedFile(tempArray[0]);
+            API.get(`/store/get-all-snippets?appId=${appId}&storeId=${storeId}`,prepareAuthHeader())
+                .then(response=>{
+                    let data = response.data
+                    const tempArray = [];
+                    tempArray.push(...data.data);
+                    setFiles(tempArray);
+                    setSelectedFile(tempArray[0]);
+                    console.log(tempArray);
+                })
+                .catch(error=>{
+                    console.log(error);
+                })
         }
     }, [resetSnippet]);
+
     const generateTabContent = () => {
         const allTab = files.map((file) => {
             return (
@@ -63,9 +63,14 @@ function EditSnippet(props) {
         return allTab;
     }
 
-    useEffect(() => {
-        // console.log(selectedFile);
-    }, [selectedFile.content]);
+    const prepareAuthHeader = () => {
+        const header={
+            headers:{
+                'Authorization':`${props.authToken}`
+            }
+        }
+        return header;
+    };
 
     const handleFileContentChange = event => {
         setSelectedFile({...selectedFile, "content": event.target.value});
@@ -86,13 +91,18 @@ function EditSnippet(props) {
     };
 
     const handlePushSnippetToShopify = event => {
-
         let filesFromLocalStorage = localStorage.getItem('files');
+        console.log("filesFromLocalStorage");
+        console.log(filesFromLocalStorage);
         if (filesFromLocalStorage != null) {
-            setUpdateSnippet(true);
-            setPushSnippetToShopify(true);
-            localStorage.removeItem('files');
-            history.back();
+            API.post('/store/update-all-snippets',{storeId, files:filesFromLocalStorage},prepareAuthHeader())
+                .then(response=>{
+                    console.log(response);
+                    setPushSnippetToShopify(true);
+                    localStorage.removeItem('files');
+                    history.back();
+                });
+
 
             // axios.post(shopifyUpdateSnippetURL,{data:selectedFile.content})
             // .then(response=>{
@@ -115,9 +125,9 @@ function EditSnippet(props) {
                 <TabPanel value={value} index={file.index} key={file.index}>
                 <textarea name={`tab_${file.index}`} id={`test_${file.index}`} cols={150} rows={20}
                           value={selectedFile.content}
-                          onChange={(event) => handleFileContentChange(event)}/>
-                    <Button className={classes.buttons} variant={"contained"} color={"secondary"} onClick={(event) => handleUpdateSnippet(event)}
-                            disabled={updateSnippet}>Update Snippet</Button>
+                          onChange={(event) => handleFileContentChange(event)} onBlur={()=>handleUpdateSnippet(event)}/>
+                    {/*<Button className={classes.buttons} variant={"contained"} color={"secondary"} onClick={(event) => handleUpdateSnippet(event)}*/}
+                    {/*        disabled={updateSnippet}>Update Snippet</Button>*/}
                     <Button className={classes.buttons} variant={"contained"} color={"secondary"}
                             onClick={(event) => handlePushSnippetToShopify(event)} disabled={pushSnippetToShopify}>Push
                         All Snippet to Shopify</Button>
@@ -127,11 +137,52 @@ function EditSnippet(props) {
             )
         });
     }
+
+    const checkLocalStorageForSnippet = (newValue)=>{
+        let filesFromLocalStorage = localStorage.getItem('files');
+        if (filesFromLocalStorage == null)
+            return false;
+        filesFromLocalStorage = JSON.parse(filesFromLocalStorage);
+        let filteredFileFromStorage = filesFromLocalStorage.find(file=>file.index==newValue);
+        return filteredFileFromStorage.content != '';
+    }
     const handleChange = (event, newValue) => {
-        setValue(newValue);
-        const filteredFile = files.filter(file => file.index == newValue);
-        setSelectedFile(filteredFile[0]);
+        if(checkLocalStorageForSnippet(newValue)){
+            let filesFromLocalStorage = localStorage.getItem('files');
+            filesFromLocalStorage = JSON.parse(filesFromLocalStorage);
+            let filteredFileFromStorage = filesFromLocalStorage.find(file=>file.index==newValue);
+            setSelectedFile(filteredFileFromStorage);
+            setValue(newValue);
+        }
+        else{
+            const url = `/store/get-single-snippet?appId=${appId}&storeId=${storeId}&snippetIndex=${newValue}`;
+            API.get(url,prepareAuthHeader())
+                .then(response=>  {
+                    let responseData = response.data.data[0]
+                    let composedData = {
+                        "index":parseInt(responseData.index),
+                        "filename":responseData.filename,
+                        "content":responseData.content,
+                    }
+                    const filteredFiles = files.filter(file=>file.index != newValue)
+                    filteredFiles.push(composedData);
+                    let sortedFiles = filteredFiles.sort(function (f1, f2) {
+                        if (f1.index == f2.index)
+                            return 0;
+                        return f1.index > f2.index ? 1 : -1;
+                    });
+                    setFiles(sortedFiles);
+                    const findedFile = sortedFiles.find(file => file.index == newValue); // used sortedFiles instead files to avoid async issues.
+                    setSelectedFile(findedFile);
+                    setValue(newValue);
+                })
+                .catch(error=>{
+                    console.log(error);
+                })
+        }
+
     };
+
     return (
         <div className={classes.root}>
             <Tabs
@@ -142,7 +193,6 @@ function EditSnippet(props) {
                 aria-label="Vertical tabs example"
                 className={classes.tabs}
             >
-
                 {generateTabContent().length > 0 ? generateTabContent() : null}
             </Tabs>
             {generateTabPanelContent().length > 0 ? generateTabPanelContent() : null}
@@ -150,4 +200,8 @@ function EditSnippet(props) {
     )
 }
 
-export default EditSnippet;
+const mapStateToProps = (state,ownProps)=> {
+    const {auth:{authToken}} = state;
+    return {authToken};
+}
+export default connect(mapStateToProps)(EditSnippet);
