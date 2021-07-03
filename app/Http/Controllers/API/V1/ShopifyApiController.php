@@ -23,12 +23,22 @@ class ShopifyApiController extends Controller
      */
     private $appRepo;
 
+    /**
+     * ShopifyApiController constructor.
+     * @param StoreRepositoryInterface $storeRepository
+     * @param ApplicationRepositoryInterface $applicationRepository
+     */
     public function __construct(StoreRepositoryInterface $storeRepository, ApplicationRepositoryInterface $applicationRepository)
     {
         $this->storeRepo = $storeRepository;
         $this->appRepo = $applicationRepository;
     }
 
+    /**
+     * Getting all Snippets from Shopify for current active theme.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllSnippets(Request $request)
     {
         $appId = $request->query('appId');
@@ -66,6 +76,11 @@ class ShopifyApiController extends Controller
 
     }
 
+    /**
+     * Fetching a single Snippet from Shopify
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getSingleSnippet(Request $request)
     {
         $appId = $request->query('appId');
@@ -98,6 +113,11 @@ class ShopifyApiController extends Controller
 
     }
 
+    /**
+     * All files provided in the request will get updated in Shopify
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateAllSnippets(Request $request)
     {
         $storeId = $request->get('storeId');
@@ -132,7 +152,13 @@ class ShopifyApiController extends Controller
         }
         return $this->sendSuccess("All Snippets are updated successfully");
     }
-    public function getActiveThemeForStore($id){
+
+    /**
+     * Getting id for active theme for given store.
+     * @param $id
+     * @return false|mixed
+     */
+    private function getActiveThemeForStore($id){
         $store = $this->storeRepo->find($id);
         if(!$store)
             return false;
