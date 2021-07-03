@@ -63,7 +63,9 @@ function EditSnippet(props) {
                     setFiles(tempArray);
                     setSelectedFile(tempArray[0]);
                     // console.log(tempArray);
+                    resetSnippet ? setValue(0) : null ;
                     setLoading(false);
+                    setResetSnippet(false);
                 })
                 .catch(error=>{
                     console.log(error);
@@ -133,7 +135,7 @@ function EditSnippet(props) {
 
     const handleResetClick = () => {
         localStorage.removeItem('files');
-        setResetSnippet(!resetSnippet);
+        setResetSnippet(true);
     };
     const showLoader = (text)=>{
         return (
