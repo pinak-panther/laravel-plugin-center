@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {Button, Tab, Tabs} from "@material-ui/core";
+import {Button, LinearProgress, Tab, Tabs} from "@material-ui/core";
 import TabPanel from "../../../_metronic/_partials/controls/tabs/TabPanel";
 import {API} from "../../../_metronic/_helpers/AxiosHelper";
 import {connect} from "react-redux";
@@ -22,7 +22,17 @@ function EditSnippet(props) {
         },
         buttonContainer:{
             textAlign:'center'
+        },
+        loadingBarContainer:{
+            width : '825px',
+            paddingLeft:'27px',
+            paddingTop:'180px',
+            textAlign:'center'
+        },
+        loaderText:{
+            color:'#848383'
         }
+
     }));
 
     const classes = useStyles();
@@ -32,6 +42,7 @@ function EditSnippet(props) {
     const [updateSnippet, setUpdateSnippet] = useState(false);
     const [pushSnippetToShopify, setPushSnippetToShopify] = useState(false);
     const [resetSnippet, setResetSnippet] = useState(false);
+    const [loading,setLoading] = useState(true);
     const params = useParams();
     const {appId,storeId} = params;
 
@@ -42,6 +53,7 @@ function EditSnippet(props) {
             filesFromLocalStorage = JSON.parse(filesFromLocalStorage);
             setFiles(filesFromLocalStorage);
             setSelectedFile(filesFromLocalStorage[0]);
+            setLoading(false);
         } else {
             API.get(`/store/get-all-snippets?appId=${appId}&storeId=${storeId}`,prepareAuthHeader())
                 .then(response=>{
@@ -51,9 +63,11 @@ function EditSnippet(props) {
                     setFiles(tempArray);
                     setSelectedFile(tempArray[0]);
                     // console.log(tempArray);
+                    setLoading(false);
                 })
                 .catch(error=>{
                     console.log(error);
+                    setLoading(false);
                 })
         }
     }, [resetSnippet]);
@@ -92,6 +106,7 @@ function EditSnippet(props) {
         setFiles(sortedFiles);
         localStorage.setItem('files', JSON.stringify(sortedFiles));
         setUpdateSnippet(true);
+        setPushSnippetToShopify(true);
     };
 
     const handlePushSnippetToShopify = event => {
@@ -120,27 +135,43 @@ function EditSnippet(props) {
         localStorage.removeItem('files');
         setResetSnippet(!resetSnippet);
     };
-
+    const showLoader = (text)=>{
+        return (
+            <div className={classes.loadingBarContainer}>
+                <p>
+                    <span className={classes.loaderText}>{text.toUpperCase()}...</span>
+                </p>
+                <LinearProgress color={"secondary"}/>
+            </div>
+        );
+    }
     const generateTabPanelContent = () => {
         return files.map((file) => {
             return (
                 <TabPanel value={value} index={file.index} key={file.index}>
                 <h4>{file.filename.toUpperCase()}</h4>
-                <textarea name={`tab_${file.index}`} id={`test_${file.index}`} cols={120} rows={20}
-                          value={selectedFile.content}
-                          onChange={(event) => handleFileContentChange(event)} onBlur={()=>handleUpdateSnippet(event)}/>
-                    {/*<Button className={classes.buttons} variant={"contained"} color={"secondary"} onClick={(event) => handleUpdateSnippet(event)}*/}
-                    {/*        disabled={updateSnippet}>Update Snippet</Button>*/}
-                    <div className={classes.buttonContainer}>
-                        <Button className={classes.buttons} variant={"contained"} color={"secondary"}
-                                onClick={(event) => handlePushSnippetToShopify(event)} disabled={pushSnippetToShopify}>Push
-                            All Snippet to Shopify</Button>
-                        <Button variant={"contained"} color={"secondary"}
-                                onClick={(event) => handleResetClick()}>Reset Snippets</Button>
-                    </div>
+                    {loading ?
+                        showLoader('fetching snippet'):
+                        <textarea name={`tab_${file.index}`} id={`test_${file.index}`} cols={120} rows={20} value={selectedFile.content}
+                          onChange={(event) => handleFileContentChange(event)}
+                          onBlur={()=>handleUpdateSnippet(event)}/>
+                    }
+                    {
+                        loading ? null :
+                        <div className={classes.buttonContainer}>
+                            {/*<Button className={classes.buttons} variant={"contained"} color={"secondary"} onClick={(event) => handleUpdateSnippet(event)}*/}
+                            {/*        disabled={updateSnippet}>Update Snippet</Button>*/}
+                            <Button className={classes.buttons} variant={"contained"} color={"secondary"}
+                                    onClick={(event) => handlePushSnippetToShopify(event)} disabled={!pushSnippetToShopify}>Push
+                                All Snippet to Shopify</Button>
+                            <Button variant={"contained"} color={"secondary"}
+                                    onClick={(event) => handleResetClick()}>Reset Snippets</Button>
+                        </div>
+                    }
+
                 </TabPanel>
             )
-        });
+        })
     }
 
     const checkLocalStorageForSnippet = (newValue)=>{
@@ -152,12 +183,14 @@ function EditSnippet(props) {
         return filteredFileFromStorage.content != '';
     }
     const handleChange = (event, newValue) => {
+        setLoading(true);
         if(checkLocalStorageForSnippet(newValue)){
             let filesFromLocalStorage = localStorage.getItem('files');
             filesFromLocalStorage = JSON.parse(filesFromLocalStorage);
             let filteredFileFromStorage = filesFromLocalStorage.find(file=>file.index==newValue);
             setSelectedFile(filteredFileFromStorage);
             setValue(newValue);
+            setLoading(false);
         }
         else{
             const url = `/store/get-single-snippet?appId=${appId}&storeId=${storeId}&snippetIndex=${newValue}`;
@@ -180,9 +213,11 @@ function EditSnippet(props) {
                     const findedFile = sortedFiles.find(file => file.index == newValue); // used sortedFiles instead files to avoid async issues.
                     setSelectedFile(findedFile);
                     setValue(newValue);
+                    setLoading(false);
                 })
                 .catch(error=>{
                     console.log(error);
+                    setLoading(false);
                 })
         }
 
