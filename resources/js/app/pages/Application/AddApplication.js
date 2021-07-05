@@ -52,20 +52,13 @@ function AddApplication(props) {
     const history = useHistory();
 
     const formikHandleSubmit = (values) => {
-        API.post('application', values, prepareAuthHeader())
+        API.post('application', values)
             .then(response => {
                 history.push('/application-list');
             })
             .catch(err => {
                 console.error(err);
             })
-    }
-    const prepareAuthHeader = () => {
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
     }
 
     return (
@@ -94,8 +87,4 @@ function AddApplication(props) {
     );
 }
 
-const mapStateToProps = (state, ownProps) => {
-    const {auth: {authToken}} = state;
-    return {authToken};
-}
-export default connect(mapStateToProps)(AddApplication);
+export default AddApplication;

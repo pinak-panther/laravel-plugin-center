@@ -55,7 +55,7 @@ function EditSnippet(props) {
             setSelectedFile(filesFromLocalStorage[0]);
             setLoading(false);
         } else {
-            API.get(`/store/get-all-snippets?appId=${appId}&storeId=${storeId}`,prepareAuthHeader())
+            API.get(`/store/get-all-snippets?appId=${appId}&storeId=${storeId}`)
                 .then(response=>{
                     let data = response.data
                     const tempArray = [];
@@ -83,15 +83,6 @@ function EditSnippet(props) {
         return allTab;
     }
 
-    const prepareAuthHeader = () => {
-        const header={
-            headers:{
-                'Authorization':`${props.authToken}`
-            }
-        }
-        return header;
-    };
-
     const handleFileContentChange = event => {
         setSelectedFile({...selectedFile, "content": event.target.value});
         setUpdateSnippet(false);
@@ -116,7 +107,7 @@ function EditSnippet(props) {
         // console.log("filesFromLocalStorage");
         // console.log(filesFromLocalStorage);
         if (filesFromLocalStorage != null) {
-            API.post('/store/update-all-snippets',{storeId, files:filesFromLocalStorage},prepareAuthHeader())
+            API.post('/store/update-all-snippets',{storeId, files:filesFromLocalStorage})
                 .then(response=>{
                     // console.log(response);
                     setPushSnippetToShopify(true);
@@ -196,7 +187,7 @@ function EditSnippet(props) {
         }
         else{
             const url = `/store/get-single-snippet?appId=${appId}&storeId=${storeId}&snippetIndex=${newValue}`;
-            API.get(url,prepareAuthHeader())
+            API.get(url)
                 .then(response=>  {
                     let responseData = response.data.data[0]
                     let composedData = {
@@ -242,8 +233,4 @@ function EditSnippet(props) {
     )
 }
 
-const mapStateToProps = (state,ownProps)=> {
-    const {auth:{authToken}} = state;
-    return {authToken};
-}
-export default connect(mapStateToProps)(EditSnippet);
+export default EditSnippet;

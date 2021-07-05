@@ -69,7 +69,7 @@ function FilteredStore(props) {
     const {appId} = params;
 
     const loadStores = (url) => {
-        API.get(url, prepareAuthHeader())
+        API.get(url)
             .then(response => {
                 setLoading(response.data.data.next_page_url == null ? false : true);
                 setPage(prev => prev + 1);
@@ -90,13 +90,6 @@ function FilteredStore(props) {
         loadStores(url);
     }, [changeFlag]);
 
-    const prepareAuthHeader = () => {
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
-    }
 
     const loadMoreClickHandler = () => {
         setChangFlag(!changeFlag);
@@ -140,9 +133,4 @@ function FilteredStore(props) {
         </Paper>
     );
 }
-
-const mapStateToProps = (state, ownProps) => {
-    const {auth: {authToken}} = state;
-    return {authToken};
-}
-export default connect(mapStateToProps)(FilteredStore)
+export default FilteredStore

@@ -76,7 +76,7 @@ function ListApplication(props) {
     const [loading,setLoading]=useState(false);
 
     const loadApplications = () => {
-        API.get(`application?page=${page}`,prepareAuthHeader())
+        API.get(`application?page=${page}`)
             .then(response => {
                 setLoading(response.data.data.next_page_url == null ? false : true);
                 setPage(prev => prev + 1);
@@ -98,13 +98,6 @@ function ListApplication(props) {
 
     const userClickHandler = (id)=>{
        history.push(`application-edit/${id}`);
-    }
-    const prepareAuthHeader = ()=>{
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
     }
 
     const loadMoreClickHandler = () => {
@@ -155,8 +148,4 @@ function ListApplication(props) {
         </Paper>
     );
 }
-const mapStateToProps = (state,ownProps)=>{
- const {auth:{authToken}}=state;
- return {authToken};
-}
-export default connect(mapStateToProps)(ListApplication);
+export default ListApplication;

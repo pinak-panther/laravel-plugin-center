@@ -36,16 +36,9 @@ function EditStore(props) {
     const [name,setName]=useState('');
     const [email,setEmail]=useState('');
 
-    const prepareAuthHeader = ()=>{
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
-    }
     useEffect(()=>{
         let id = props.match.params.id;
-        API.get(`store/${id}`,prepareAuthHeader())
+        API.get(`store/${id}`)
             .then(response=>{
                 let data  = response.data.data;
                 setId(data.id);
@@ -63,7 +56,7 @@ function EditStore(props) {
     });
 
     const handleFormikSubmit = (values) => {
-        API.put(`store/${id}`,values,prepareAuthHeader())
+        API.put(`store/${id}`,values)
             .then(response=>{
                 history.goBack();
             })
@@ -89,8 +82,4 @@ function EditStore(props) {
         </Formik>
     );
 }
-const mapStateToProps = (state,ownProps) =>{
-    const {auth:{authToken}} = state;
-    return {authToken};
-}
-export default connect(mapStateToProps)(EditStore)
+export default EditStore;

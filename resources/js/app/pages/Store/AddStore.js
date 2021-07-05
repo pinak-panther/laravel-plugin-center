@@ -33,13 +33,6 @@ function AddStore(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const prepareAuthHeader = ()=>{
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
-    }
 
     const validationSchema = Yup.object({
         name:Yup.string()
@@ -50,7 +43,7 @@ function AddStore(props) {
     });
 
     const formikSubmitHandler = (values) => {
-        API.post('store',values,prepareAuthHeader())
+        API.post('store',values)
             .then(response=>{
                 history.push('/store-list');
             })
@@ -58,7 +51,6 @@ function AddStore(props) {
                 console.error(err);
             })
     }
-
 
     const initialValues = {
         name:'',
@@ -82,8 +74,4 @@ function AddStore(props) {
     );
 }
 
-const mapStateToProps = (state, ownProps) =>{
-    const {auth:{authToken}}=state;
-    return {authToken};
-}
-export default connect(mapStateToProps)(AddStore)
+export default AddStore;
