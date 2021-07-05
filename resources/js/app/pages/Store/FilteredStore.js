@@ -125,11 +125,15 @@ function FilteredStore(props) {
                     ))}
                 </TableBody>
             </Table>
-            <div className={classes.loadMore}>
-                <Button variant="contained" disabled={!loading} onClick={() => {
-                    loadMoreClickHandler()
-                }} color={"secondary"} size={"large"} className={classes.button}>Load More</Button>
-            </div>
+            {
+                loading ?
+                <div className={classes.loadMore}>
+                    <Button variant="contained" disabled={!loading} onClick={() => {
+                        loadMoreClickHandler()
+                    }} color={"secondary"} size={"large"} className={classes.button}>Load More</Button>
+                </div> : null
+            }
+
         </Paper>
     );
 }
