@@ -14,7 +14,7 @@ export function AsideMenuList({layoutProps}) {
        menu:{
            fontSize:'1.3rem',
            color:'white',
-           listStyleType:'none'
+           listStyleType:'none',
        },
        submenu:{
            fontSize:'0.9rem',
@@ -175,18 +175,34 @@ export function AsideMenuList({layoutProps}) {
 
     return (
         <>
-          <ul style={{marginTop:'80px'}}>
+          <ul style={{marginTop:'80px'}} >
               <li className={classes.menu}>Application</li>
               <div>
-                  <ul>
-                      <li className={classes.submenu}>List Application</li>
-                      <li className={classes.submenu}>Add Application</li>
+                  <ul className={classes.menu} style={{paddingLeft:'20px'}}>
+                      <li className={classes.submenu} >
+                          <NavLink className="menu-link" to="/application-list" >
+                              <i className="far fa-hand-point-right" style={{paddingRight:'5px'}}></i>
+                              <span className="menu-text">List Application</span>
+                          </NavLink>
+                      </li>
+                      <li className={classes.submenu}>
+                          <NavLink  to="/application-add" >
+                              <i className="far fa-hand-point-right" style={{paddingRight:'5px'}}></i>
+                              <span >Add Application</span>
+                          </NavLink>
+                      </li>
+
                   </ul>
               </div>
               <li className={classes.menu}>Store</li>
               <div>
-                  <ul>
-                      <li className={classes.submenu}>List Store</li>
+                  <ul className={classes.menu} style={{paddingLeft:'20px'}}>
+                      <li className={classes.submenu} >
+                          <NavLink className="menu-link" to="/store-list" >
+                              <i className="far fa-hand-point-right" style={{paddingRight:'5px'}}></i>
+                              <span className="menu-text">List Store</span>
+                          </NavLink>
+                      </li>
                   </ul>
               </div>
           </ul>
