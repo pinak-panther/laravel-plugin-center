@@ -22,7 +22,7 @@ class StoreFactory extends Factory
     public function definition()
     {
         $applicationIds = ['12335400','1354500','1354600','1354800','1354745'];
-        $domain = explode(".",$this->faker->domainName)[0];
+//        $domain = explode(".",$this->faker->domainName)[0];
         return [
             'application_id'=>$this->faker->randomElement($applicationIds),
 //            'name'=>"https://{$domain}.myshopify.com",
