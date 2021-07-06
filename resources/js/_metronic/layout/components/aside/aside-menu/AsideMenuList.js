@@ -12,15 +12,26 @@ export function AsideMenuList({layoutProps}) {
 
     const useStyles = makeStyles(theme => ({
        menu:{
-           fontSize:'1.3rem',
+           fontSize:'1.5rem',
            color:'white',
            listStyleType:'none',
        },
        submenu:{
-           fontSize:'0.9rem',
-           color:'white',
+           paddingTop:'5px',
+           fontSize:'1.1rem',
            textDecoration:'none'
-       }
+       },
+       menuLink:{
+           color:'white'
+       },
+       linkBullet:{
+           paddingRight:'5px',
+           paddingTop:'0px',
+           verticalAlign:'middle'
+       },
+        linkText:{
+            fontSize:'1.1rem',
+        }
     }));
     const classes = useStyles();
     // return (
@@ -180,27 +191,27 @@ export function AsideMenuList({layoutProps}) {
               <div>
                   <ul className={classes.menu} style={{paddingLeft:'20px'}}>
                       <li className={classes.submenu} >
-                          <NavLink className="menu-link" to="/application-list" >
-                              <i className="far fa-hand-point-right" style={{paddingRight:'5px'}}></i>
-                              <span className="menu-text">List Application</span>
+                          <NavLink className={classes.menuLink} to="/application-list" >
+                              <i className={"fas fa-angle-double-right "+ classes.linkBullet} ></i>
+                              <span className="menu-text ">List Application</span>
                           </NavLink>
                       </li>
                       <li className={classes.submenu}>
-                          <NavLink  to="/application-add" >
-                              <i className="far fa-hand-point-right" style={{paddingRight:'5px'}}></i>
+                          <NavLink  className={classes.menuLink} to="/application-add" >
+                              <i className={"fas fa-angle-double-right "+ classes.linkBullet} ></i>
                               <span >Add Application</span>
                           </NavLink>
                       </li>
 
                   </ul>
               </div>
-              <li className={classes.menu}>Store</li>
+              <li className={classes.menu} style={{marginTop:'15px'}}>Store</li>
               <div>
                   <ul className={classes.menu} style={{paddingLeft:'20px'}}>
-                      <li className={classes.submenu} >
-                          <NavLink className="menu-link" to="/store-list" >
-                              <i className="far fa-hand-point-right" style={{paddingRight:'5px'}}></i>
-                              <span className="menu-text">List Store</span>
+                      <li className={classes.submenu}>
+                          <NavLink className={classes.menuLink} to="/store-list" >
+                              <i className={"fas fa-angle-double-right "+ classes.linkBullet} ></i>
+                              <span className={"menu-text " }>List Store</span>
                           </NavLink>
                       </li>
                   </ul>
