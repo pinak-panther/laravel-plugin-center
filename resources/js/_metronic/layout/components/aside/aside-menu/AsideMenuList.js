@@ -12,11 +12,13 @@ export function AsideMenuList({layoutProps}) {
 
     const useStyles = makeStyles(theme => ({
        menu:{
+           fontFamily:'popins',
            fontSize:'1.5rem',
            color:'white',
            listStyleType:'none',
        },
        submenu:{
+           fontFamily:'popins',
            paddingTop:'5px',
            fontSize:'1.1rem',
            textDecoration:'none'

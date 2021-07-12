@@ -48,7 +48,7 @@ export function Layout({ children }) {
                         <div
                             id="kt_content"
                             className={`content ${layoutProps.contentCssClasses} d-flex flex-column flex-column-fluid`}
-                            style={{minHeight:'870px'}}
+                            style={{minHeight:'850px'}}
                         >
                             {layoutProps.subheaderDisplay && <SubHeader/>}
                             {/*begin::Entry*/}
