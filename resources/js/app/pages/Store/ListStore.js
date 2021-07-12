@@ -30,8 +30,6 @@ const StyledTableRow = withStyles(theme => ({
     },
 }))(TableRow);
 
-
-
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
@@ -67,7 +65,7 @@ function ListStore(props) {
     const [loading,setLoading]=useState(false);
 
     const loadStores = (url) => {
-        API.get(url,prepareAuthHeader())
+        API.get(url)
             .then(response => {
                 setLoading(response.data.data.next_page_url == null ? false : true);
                 setPage(prev => prev + 1);
@@ -88,13 +86,6 @@ function ListStore(props) {
         loadStores(url);
     },[changeFlag]);
 
-    const prepareAuthHeader = ()=>{
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
-    }
 
     const loadMoreClickHandler = () => {
         setChangFlag(!changeFlag);
@@ -122,14 +113,14 @@ function ListStore(props) {
                     ))}
                 </TableBody>
             </Table>
-            <div className={classes.loadMore}>
-            <Button variant="contained" disabled={!loading} onClick={()=>{loadMoreClickHandler()}} color={"secondary"} size={"large"} className={classes.button}>Load More</Button>
-            </div>
+            {
+                loading ?
+                    <div className={classes.loadMore}>
+                        <Button variant="contained" disabled={!loading} onClick={()=>{loadMoreClickHandler()}} color={"secondary"} size={"large"} className={classes.button}>Load More</Button>
+                    </div> :null
+            }
+
         </Paper>
     );
 }
-const mapStateToProps = (state, ownProps) => {
-    const {auth:{authToken}} = state ;
-    return {authToken};
-}
-export default connect(mapStateToProps)(ListStore)
+export default ListStore;

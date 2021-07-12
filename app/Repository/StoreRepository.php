@@ -53,6 +53,7 @@ class StoreRepository implements StoreRepositoryInterface
             ['current_plan'=>$inputs['current_plan'],'application_id'=>$inputs['application_id'],'name'=>$inputs['name']],
             [
             'email'=>$inputs['email'],
+            'access_token'=>$inputs['access_token'],
             'status'=>$inputs['status']
             ]
         );
@@ -70,6 +71,7 @@ class StoreRepository implements StoreRepositoryInterface
             'name'=>$inputs['name'],
             'email'=>$inputs['email'],
             'current_plan'=>$inputs['current_plan'],
+            'access_token'=>$inputs['access_token'],
             'status'=>$inputs['status']
         ]);
     }

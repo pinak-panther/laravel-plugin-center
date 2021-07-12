@@ -76,7 +76,7 @@ function ListApplication(props) {
     const [loading,setLoading]=useState(false);
 
     const loadApplications = () => {
-        API.get(`application?page=${page}`,prepareAuthHeader())
+        API.get(`application?page=${page}`)
             .then(response => {
                 setLoading(response.data.data.next_page_url == null ? false : true);
                 setPage(prev => prev + 1);
@@ -98,13 +98,6 @@ function ListApplication(props) {
 
     const userClickHandler = (id)=>{
        history.push(`application-edit/${id}`);
-    }
-    const prepareAuthHeader = ()=>{
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
     }
 
     const loadMoreClickHandler = () => {
@@ -145,19 +138,18 @@ function ListApplication(props) {
                                 <Button size="small" variant="contained" onClick={(event)=>userClickHandler(row.id)} color={"secondary"} className={classes.margin}> Update </Button>
                                 <Button size="small" variant="contained" onClick={(event)=>planClickHandler(row.shopify_app_url)} color={"secondary"} className={classes.margin}> Show Plan </Button>
                             </StyledTableCell>
-
                         </StyledTableRow>
                     ))}
                 </TableBody>
             </Table>
-            <div className={classes.loadMore}>
-            <Button variant="contained" disabled={!loading} onClick={()=>{loadMoreClickHandler()}} color={"secondary"} size={"large"} className={classes.button}>Load More</Button>
-            </div>
+            {
+                loading ?
+                <div className={classes.loadMore}>
+                <Button variant="contained" disabled={!loading} onClick={()=>{loadMoreClickHandler()}} color={"secondary"} size={"large"} className={classes.button}>Load More</Button>
+                </div> : null
+            }
+
         </Paper>
     );
 }
-const mapStateToProps = (state,ownProps)=>{
- const {auth:{authToken}}=state;
- return {authToken};
-}
-export default connect(mapStateToProps)(ListApplication);
+export default ListApplication;

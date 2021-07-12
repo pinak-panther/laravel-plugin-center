@@ -41,7 +41,7 @@ function EditApplication(props) {
 
 
     const formikHandleSubmit = (values) => {
-        API.put(`application/${id}`,values,prepareAuthHeader())
+        API.put(`application/${id}`,values)
             .then(response=>{
                 history.push('/application-list');
             })
@@ -49,16 +49,10 @@ function EditApplication(props) {
                 console.error(err);
             })
     }
-    const prepareAuthHeader = ()=>{
-        return {
-            headers: {
-                'Authorization': `Bearer ${props.authToken}`
-            },
-        }
-    }
+
     useEffect(()=>{
         let id = props.match.params.id;
-        API.get(`application/${id}`,prepareAuthHeader())
+        API.get(`application/${id}`)
             .then(response=>{
                 let data  = response.data.data;
                 setId(data.id);
@@ -102,8 +96,5 @@ function EditApplication(props) {
         </Formik>
     );
 }
-const mapStateToProps = (state,ownProps)=>{
-    const {auth:{authToken}}=state;
-    return {authToken};
-}
-export default connect(mapStateToProps)(EditApplication);
+
+export default EditApplication;

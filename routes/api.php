@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\V1\SanctumApiTokenController;
 use App\Http\Controllers\API\V1\ApplicationController;
 use App\Http\Controllers\API\V1\StoreController;
-
+use App\Http\Controllers\API\V1\ShopifyApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,7 +28,10 @@ Route::group(['middleware'=>'auth:sanctum'],function(){
     Route::get('/user', [SanctumApiTokenController::class,'getCurrentUser']);
     Route::post('/logout', [SanctumApiTokenController::class,'destroyAuthToken']);
 
+    Route::get('/store/test',[ShopifyApiController::class,'test']);
+    Route::get('/store/get-all-snippets',[ShopifyApiController::class,'getAllSnippets']);
+    Route::get('/store/get-single-snippet',[ShopifyApiController::class,'getSingleSnippet']);
+    Route::post('/store/update-all-snippets',[ShopifyApiController::class,'updateAllSnippets']);
     Route::resource('application',ApplicationController::class);
     Route::resource('store',StoreController::class);
-
 });
